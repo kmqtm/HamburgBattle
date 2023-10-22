@@ -15,6 +15,8 @@ enum class SceneState
 	HowToPlay,
 	Game,
 	Result,
+	Exit,
 };
 // シーンマネージャー
 using App = SceneManager<SceneState>;
+

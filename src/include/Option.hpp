@@ -12,6 +12,8 @@ public:
 
 	Option(const InitData& init);
 
+	~Option();
+
 	void update() override;
 
 	void draw() const override;

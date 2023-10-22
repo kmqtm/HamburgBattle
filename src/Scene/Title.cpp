@@ -15,6 +15,9 @@ static const Button EXIT(TitleFontSize, U"EXIT", 620.0, 358.0, false);
 // ボタンインスタンスの配列
 static Array<Button> TitleButtons = {PLAY_GAME, OPTION, EXIT};
 
+// アセット管理用クラスのインスタンス化
+static AssetControlClass TitleAssetControl;
+
 // 任意のキー入力が無い場合の追加処理
 void TitleAnyKeyInput(bool* ANY_KEY)
 {
@@ -42,12 +45,21 @@ void StopTitleBGM(void)
 Title::Title(const InitData& init)
 	: IScene{ init }
 {
-	// タイトルシーン用アセットの登録
-	TitleAssetLoad();
+	// タイトルシーンアセットの準備
+	TitleAssetControl.AssetPrepare(U"Title");
 
 	// 任意のキーが押されていない状態で初期化
 	ANY_KEY = false;
 }
+
+
+// タイトルシーンのデコンストラクタ
+Title::~Title()
+{
+	// アセットの登録解除
+	TitleAssetControl.AssetUnregister();
+}
+
 
 // タイトルシーン更新関数
 void Title::update()
@@ -102,8 +114,8 @@ void Title::update()
 			AudioAsset(U"Cancel").play();
 			while (AudioAsset(U"Cancel").isPlaying()) {}
 
-			// 終了
-			System::Exit();
+			// 終了シーンに遷移
+			changeScene(SceneState::Exit, 0.1s);
 		}
 	}
 
@@ -132,7 +144,7 @@ void Title::draw() const
 		if (Periodic::Square0_1(1s))
 		{
 			// タイトル画面でPRESS SPACE KEYを表示
-			FontAsset(U"TitleText")(U"PRESS ANY KEY").drawAt(400, 358);
+			FontAsset(U"GridGazer")(U"PRESS ANY KEY").drawAt(400, 358);
 		}
 	}
 	// 任意のキーが押された
@@ -142,7 +154,7 @@ void Title::draw() const
 		for (auto const& button : TitleButtons)
 		{
 			// ボタンを描画
-			button.Draw(U"TitleText");
+			button.Draw(U"GridGazer");
 		}
 	}
 }

@@ -7,12 +7,22 @@
 // 遊び方説明シーン
 //#####################################
 
+// アセット管理用クラスのインスタンス化
+static AssetControlClass HowToPlayAssetControl;
+
 // 遊び方説明シーンのコンストラクタ
 HowToPlay::HowToPlay(const InitData& init)
 	: IScene{ init }
 {
-	// 遊び方説明シーン用アセットを登録
-	HowToPlayAssetLoad();
+	// 遊び方説明シーンアセットの準備
+	HowToPlayAssetControl.AssetPrepare(U"HowToPlay");
+}
+
+// 遊び方説明シーンのデコンストラクタ
+HowToPlay::~HowToPlay()
+{
+	// アセットの登録解除
+	HowToPlayAssetControl.AssetUnregister();
 }
 
 // 遊び方説明シーンの更新関数

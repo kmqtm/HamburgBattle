@@ -15,12 +15,22 @@ static const Button SIZE3(OptionFontSize, U"1200 x 900", 610.0, 320.0, false);
 // ボタンインスタンスの配列
 static Array<Button> OptionButtons = { SIZE1, SIZE2, SIZE3 };
 
+// アセット管理用クラスのインスタンス化
+static AssetControlClass OptionAssetControl;
+
 // オプションシーンのコンストラクタ
 Option::Option(const InitData& init)
 	: IScene{ init }
 {
-	// オプションシーン用アセットの登録
-	OptionAssetLoad();
+	// オプションシーンアセットの準備
+	OptionAssetControl.AssetPrepare(U"Option");
+}
+
+// オプションシーンのデコンストラクタ
+Option::~Option()
+{
+	// アセットの登録解除
+	OptionAssetControl.AssetUnregister();
 }
 
 // オプションシーンの更新関数
@@ -81,13 +91,13 @@ void Option::update()
 // オプションシーンの描画関数
 void Option::draw() const
 {
-	FontAsset(U"OptionText")(U"好みのウィンドウサイズを選択してください\nウィンドウサイズは手動でも変えられます").drawAt(400, 180);
-	FontAsset(U"OptionText")(U"Escキーでタイトルへ戻る").drawAt(400, 420);
+	FontAsset(U"GridGazer")(U"Select your preferred window size\nWindow size can also be changed manually").drawAt(400, 180);
+	FontAsset(U"GridGazer")(U"Press ESC key to return to the title").drawAt(400, 420);
 
 	// OptionButtons配列の中のボタンについて
 	for (auto const& button : OptionButtons)
 	{
 		// ボタンを描画
-		button.Draw(U"OptionText");
+		button.Draw(U"GridGazer");
 	}
 }

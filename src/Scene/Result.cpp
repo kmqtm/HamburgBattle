@@ -8,6 +8,9 @@
 // リザルトシーン
 //#####################################
 
+// アセット管理用クラスのインスタンス化
+static AssetControlClass ResultAssetControl;
+
 // リザルトシーン用カウンタ(1フレームで1カウント)
 static int32 ResultSceneFrameCount = 0;
 
@@ -143,14 +146,14 @@ void ResultTimeWinSound(void)
 	if (IsGameOver == false && ResultSceneStopwatch.msF() > 6000 && Bump2 == false)
 	{
 		Bump2 = true;
-		AudioAsset(U"MoonBump").setVolume(0.5);
+		AudioAsset(U"MoonBump").setVolume(0.3);
 		AudioAsset(U"MoonBump").play();
 	}
 	// UFOに勝利
 	if (IsGameOver == false && ResultSceneStopwatch.msF() > 9000 && Bump3 == false)
 	{
 		Bump3 = true;
-		AudioAsset(U"UFOBump").setVolume(0.5);
+		AudioAsset(U"UFOBump").setVolume(0.7);
 		AudioAsset(U"UFOBump").play();
 	}
 	// 全てに勝利
@@ -180,9 +183,17 @@ void ResetVariable(void)
 Result::Result(const InitData& init)
 	: IScene{ init }
 {
-	ResultAssetLoad();
+	// リザルトシーンアセットの準備
+	ResultAssetControl.AssetPrepare(U"Result");
 
 	ResultSceneStopwatch.start();
+};
+
+// リザルトシーンのデコンストラクタ
+Result::~Result()
+{
+	// アセットの登録解除
+	ResultAssetControl.AssetUnregister();
 };
 
 // リザルトシーンの更新関数
@@ -233,7 +244,7 @@ void Result::draw() const
 	// ゲームオーバーであれば
 	if (IsGameOver == true)
 	{
-		FontAsset(U"ResultText")(U"Score: ", GetGameScore()).drawAt(400, 250);
-		FontAsset(U"ResultText")(U"Escキーでタイトルへ戻る").drawAt(400, 350);
+		FontAsset(U"GridGazer")(U"Score: ", GetGameScore()).drawAt(400, 250);
+		FontAsset(U"GridGazer")(U"Press ESC key to return to the title").drawAt(400, 350);
 	}
 }

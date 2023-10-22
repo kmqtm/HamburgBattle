@@ -1,20 +1,38 @@
 ﻿#pragma once
 # include <Siv3D.hpp>
 
-// 共通アセットの登録
-void CommonAssetLoad(void);
+// アセット管理クラス
+class AssetControlClass
+{
+public:
+	// アセットの用意
+	void AssetPrepare(String scene_name);
 
-// タイトルシーン用アセットの登録
-void TitleAssetLoad(void);
+	// アセットの登録解除
+	void AssetUnregister();
 
-// オプションシーン用アセットの登録
-void OptionAssetLoad(void);
+private:
+	// JSONファイル読み込み変数
+	JSON asset_json;
 
-// 遊び方説明シーン用アセットの登録
-void HowToPlayAssetLoad(void);
+	// 現在のシーン名
+	String now_scene_name;
 
-// ゲームシーン用アセットの登録
-void GameAssetLoad(void);
+	// アセットタイプ配列
+	const Array<String> type = { U"Font", U"Sound", U"Picture" };
 
-// リザルトシーン用アセットの登録
-void ResultAssetLoad(void);
+	// アセットタイプの保存用文字列
+	String asset_type;
+
+	// アセットファイル名
+	String asset_file_name;
+
+	// 拡張子を除くファイル名
+	String asset_base_name;
+
+	// アセットのファイルパス
+	String asset_filepath;
+
+	// アセットの登録とロード
+	void AssetRegisterAndLoad(String asset_type_a);
+};

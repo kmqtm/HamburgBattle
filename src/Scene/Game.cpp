@@ -7,6 +7,9 @@
 // ゲームシーン
 //#####################################
 
+// アセット管理用クラスのインスタンス化
+static AssetControlClass GameAssetControl;
+
 // ゲームシーン用カウンタ(1フレームで1カウント)
 static int32 GameSceneFrameCount = 0;
 
@@ -140,8 +143,15 @@ void GageLevelControl(void)
 Game::Game(const InitData& init)
 	: IScene{ init }
 {
-	// ゲームシーン用アセットを登録
-	GameAssetLoad();
+	// ゲームシーンアセットの準備
+	GameAssetControl.AssetPrepare(U"Game");
+}
+
+// ゲームシーンのデコンストラクタ
+Game::~Game()
+{
+	// アセットの登録解除
+	GameAssetControl.AssetUnregister();
 }
 
 // ゲームシーンの更新関数
@@ -159,6 +169,7 @@ void Game::update()
 	if (KeyZ.down() && AnimeControl == false)
 	{
 		GagePressCount++;
+		GameSceneFrameCount = 0;
 		GameScore *= (GageLevel + 1);
 
 		AudioAsset(U"GameZPressed").setVolume(0.4);

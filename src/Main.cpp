@@ -6,6 +6,7 @@
 # include "include/HowToPlay.hpp"
 # include "include/Game.hpp"
 # include "include/Result.hpp"
+# include "include/Exit.hpp"
 
 void Main()
 {
@@ -16,29 +17,32 @@ void Main()
 	// シーン画面のサイズは一定
 	Scene::SetResizeMode(ResizeMode::Keep);
 	// ウィンドウの名前
-	Window::SetTitle(U"Hamburger Battle");
+	Window::SetTitle(U"Hamburg Battle");
+	// エスケープキーを押しても終了しない
+	System::SetTerminationTriggers(UserAction::CloseButtonClicked);
 
-	// シーン追加
+	// シーン追加(最初に追加するシーンがデフォルトのシーンとなる)
 	App manager;
 	manager.add<Title>(SceneState::Title);
 	manager.add<Option>(SceneState::Option);
 	manager.add<HowToPlay>(SceneState::HowToPlay);
 	manager.add<Game>(SceneState::Game);
 	manager.add<Result>(SceneState::Result);
+	manager.add<Exit>(SceneState::Exit);
 	// シーン遷移時のフェイドイン/アウトの色を設定
 	manager.setFadeColor(ColorF{ 0, 0, 0 });
-
-	// タイトル画面用のアセットを作成
-	CommonAssetLoad();
 
 	// FPS固定のためのストップウォッチ
 	Stopwatch FPS_SW;
 	// FPS用カウントダウン開始
 	FPS_SW.start();
 
-	// エスケープキーを押しても終了しない
-	System::SetTerminationTriggers(UserAction::CloseButtonClicked);
+	// アセット管理用クラスのインスタンス化
+	AssetControlClass CommonAssetControl;
+	// 事前ロード用アセットの準備
+	CommonAssetControl.AssetPrepare(U"PreLoad");
 
+	// メインループ
 	while (System::Update())
 	{
 		ClearPrint();

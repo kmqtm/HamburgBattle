@@ -5,74 +5,119 @@
 # include "include/Game.hpp"
 # include "include/Result.hpp"
 
-// 共通アセットの登録
-void CommonAssetLoad(void)
+
+// アセットの用意
+void AssetControlClass::AssetPrepare(String scene_name)
 {
-	// 音
-	AudioAsset::Register(U"Oops", U"resources/Sound/Effect/back.wav");
-	AudioAsset::Register(U"AnyKeyPressed", U"resources/Sound/Effect/any_key_pressed.mp3");
-	AudioAsset::Register(U"Select", U"resources/Sound/Effect/select.wav");
-	AudioAsset::Register(U"Cancel", U"resources/Sound/Effect/cancel.mp3");
-	AudioAsset::Register(U"Start", U"resources/Sound/Effect/game_start.mp3");
-	AudioAsset::Register(U"Decide", U"resources/Sound/Effect/decide.mp3");
-	// 画像
-	TextureAsset::Register(U"Hamburg", U"resources/Picture/hamburg.png");
+	// アセット情報のJSONを読み込む
+	asset_json = JSON::Load( U"resources/Control/AssetControl.json" );
+
+	now_scene_name = scene_name;
+
+	// アセットのタイプごとに処理
+	for (int i = 0; i < 3; i++)
+	{
+		// アセットタイプを保存
+		asset_type = type[i];
+
+		// アセットファイル名を1つずつ取得
+		for ( const auto& file_name : asset_json[now_scene_name][asset_type].arrayView() )
+		{
+			asset_file_name = file_name.getString();
+
+			// アセットが無ければ
+			if (asset_file_name == U"null")
+			{
+				break;
+			}
+
+			// アセットのファイルパスを文字列で形成
+			asset_filepath = U"resources/" + asset_type + U"/" + asset_file_name;
+
+			// タイプ別のフォルダ内に対象のアセットファイルがあるなら
+			if (FileSystem::Exists(asset_filepath))
+			{
+				// アセットの登録とロード
+				AssetRegisterAndLoad(asset_type);
+			}
+		}
+	}
 }
 
-// タイトルシーン用アセットの登録
-void TitleAssetLoad(void)
+
+// アセットの登録とロード
+void AssetControlClass::AssetRegisterAndLoad(String asset_type_a)
 {
-	// フォント
-	FontAsset::Register(U"TitleText", TitleFontSize, U"resources/Font/rounded-mplus-2c-thin.ttf");
-	// 音
-	AudioAsset::Register(U"Grilling", U"resources/Sound/BGM/grilling.mp3");
-	// 画像
-	TextureAsset::Register(U"TitlePicture", U"resources/Picture/title(hamburg_battle).png");
+	// 拡張子を除くファイル名
+	asset_base_name = FileSystem::BaseName(asset_filepath);
+
+	// タイプ別で処理
+	// Font
+	if (asset_type_a == U"Font")
+	{
+		// フォントサイズの取得
+		int32 font_size = asset_json[now_scene_name][U"FontSize"].get<int32>();
+
+		// フォントアセットの登録
+		FontAsset::Register(asset_base_name, font_size, asset_filepath);
+		// フォントアセットのロード
+		FontAsset::Load(asset_base_name);
+	}
+	else if (asset_type_a == U"Sound")
+	{
+		// オーディオアセットの登録
+		AudioAsset::Register(asset_base_name, asset_filepath);
+		// オーディオアセットのロード
+		AudioAsset::Load(asset_base_name);
+	}
+	else if (asset_type_a == U"Picture")
+	{
+		// テクスチャアセットの登録
+		TextureAsset::Register(asset_base_name, asset_filepath);
+		// テクスチャアセットのロード
+		TextureAsset::Load(asset_base_name);
+	}
 }
 
-// オプションシーン用アセットの登録
-void OptionAssetLoad(void)
-{
-	// フォント
-	FontAsset::Register(U"OptionText", OptionFontSize, U"resources/Font/rounded-mplus-2c-thin.ttf");
-}
 
-// 遊び方説明シーン用アセットの登録
-void HowToPlayAssetLoad(void)
+// アセットの登録解除
+void AssetControlClass::AssetUnregister()
 {
-	// 画像
-	TextureAsset::Register(U"HowToPlay", U"resources/Picture/HowToPlay.png");
-}
+	// アセットのタイプごとに処理
+	for (int i = 0; i < 3; i++)
+	{
+		// アセットタイプを保存
+		asset_type = type[i];
 
-// ゲームシーン用アセットの登録
-void GameAssetLoad(void)
-{
-	// 音
-	AudioAsset::Register(U"GameBGM", U"resources/Sound/BGM/ryunomai.mp3");
-	AudioAsset::Register(U"GameZPressed", U"resources/Sound/Effect/game_scene_z_pressed.mp3");
-	// 画像
-	TextureAsset::Register(U"GameBack", U"resources/Picture/Game_Back.png");
-	TextureAsset::Register(U"Cook", U"resources/Picture/cook.png");
-	TextureAsset::Register(U"Fire1", U"resources/Picture/fire_1.png");
-	TextureAsset::Register(U"Fire2", U"resources/Picture/fire_2.png");
-	TextureAsset::Register(U"GageBack", U"resources/Picture/gage_back.png");
-	TextureAsset::Register(U"GageFront", U"resources/Picture/gage_front.png");
-}
+		// アセットファイル名を1つずつ取得
+		for (const auto& file_name : asset_json[now_scene_name][asset_type].arrayView())
+		{
+			// ファイル名の取得
+			asset_file_name = file_name.getString();
+			// 拡張子を除くファイル名
+			asset_base_name = FileSystem::BaseName(asset_file_name);
 
-// リザルトシーン用アセットの登録
-void ResultAssetLoad(void)
-{
-	// フォント
-	FontAsset::Register(U"ResultText", ResultFontSize, U"resources/Font/rounded-mplus-2c-thin.ttf");
-	// 音
-	AudioAsset::Register(U"SatelliteBump", U"resources/Sound/Effect/satellite_bump.mp3");
-	AudioAsset::Register(U"MoonBump", U"resources/Sound/Effect/moon_bump.mp3");
-	AudioAsset::Register(U"UFOBump", U"resources/Sound/Effect/ufo_bump.mp3");
-	AudioAsset::Register(U"Bounce", U"resources/Sound/Effect/bounce.mp3");
-	AudioAsset::Register(U"Cheers", U"resources/Sound/Effect/cheers.mp3");
-	// 画像
-	TextureAsset::Register(U"Universe", U"resources/Picture/universe.png");
-	TextureAsset::Register(U"Satellite", U"resources/Picture/satellite.png");
-	TextureAsset::Register(U"Moon", U"resources/Picture/moon.png");
-	TextureAsset::Register(U"UFO", U"resources/Picture/ufo.png");
+			// アセットが無ければ
+			if (asset_file_name == U"null")
+			{
+				break;
+			}
+
+			if (asset_type == U"Font")
+			{
+				// フォントアセットの登録解除
+				FontAsset::Unregister(asset_base_name);
+			}
+			else if (asset_type == U"Sound")
+			{
+				// オーディオアセットの登録解除
+				AudioAsset::Unregister(asset_base_name);
+			}
+			else if (asset_type == U"Picture")
+			{
+				// オーディオアセットの登録解除
+				TextureAsset::Unregister(asset_base_name);
+			}
+		}
+	}
 }

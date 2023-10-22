@@ -12,6 +12,8 @@ public:
 
 	Result(const InitData& init);
 
+	~Result();
+
 	void update() override;
 
 	void draw() const override;

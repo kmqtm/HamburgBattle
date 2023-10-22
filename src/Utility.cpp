@@ -1,6 +1,7 @@
 ﻿# include <Siv3D.hpp>
 # include "include/Utility.hpp"
 
+
 // 1フレームで1カウント
 void CountControl(int32& Count)
 {
