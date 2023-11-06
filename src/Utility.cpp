@@ -8,6 +8,6 @@ void CountControl(int32& Count)
 	Count++;
 	if (Count > 60)
 	{
-		Count = 0;
+		Count = 1;
 	}
 }

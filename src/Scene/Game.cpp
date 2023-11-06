@@ -50,19 +50,31 @@ void PlayGameBGM(void)
 // ゲージを描画
 void DrawGage(void)
 {
-	TextureAsset(U"GageBack").draw(251,351);
-
 	if (AnimeControl == true)
 	{
-		Rect{ 251 + 5, 351, ((291 * GageLevel) / (FPS - 1)), 200 }.draw(Palette::Red);
+		if (GageLevel != 60)
+		{
+			Rect{ 250 + 5, 410, ((290 * GageLevel) / (FPS - 1)), 180 }.draw(Palette::Red);
+		}
+		else
+		{
+			Rect{ 250 + 5, 410, ((290 * GageLevel) / (FPS - 1)), 180 }.draw(Palette::Yellow);
+		}
 	}
 	else if (AnimeControl == false)
 	{
-		// 6 ~ 300 - 4
-		// 左上の基準点, 幅, 高さ
-		Rect{ 251 + 5, 351, ((291 * GameSceneFrameCount) / (FPS - 1)), 200 }.draw(Palette::Red);
+		if (GameSceneFrameCount != 60)
+		{
+			// 6 ~ 300 - 4
+			// 左上の基準点, 幅, 高さ
+			Rect{ 250 + 5, 410, ((290 * GameSceneFrameCount) / (FPS - 1)), 180 }.draw(Palette::Red);
+		}
+		else
+		{
+			Rect{ 250 + 5, 410, ((290 * GameSceneFrameCount) / (FPS - 1)), 180 }.draw(Palette::Yellow);
+		}
 	}
-	TextureAsset(U"GageFront").draw(251, 351);
+	TextureAsset(U"GageFront").draw(0, 350);
 }
 
 // 背景を描画
@@ -122,7 +134,7 @@ void DrawHamburg(void)
 // アニメーションに用いるストップウォッチとブール値の管理
 void AnimeTimeControl(void)
 {
-	if (AnimeTime.msF() > 1000)
+	if (AnimeTime.msF() >= 1000)
 	{
 		AnimeTime.reset();
 		AnimeControl = false;
@@ -137,6 +149,13 @@ void GageLevelControl(void)
 	{
 		GageLevel = GameSceneFrameCount;
 	}
+}
+
+// ゲージ押下回数の描画
+void DrawGagePressCount()
+{
+	// 左上の基準点, 幅, 高さ
+	Rect{ 50, 470, 38 * GagePressCount, 38 }.draw(Palette::Lightgreen);
 }
 
 // ゲームシーンのコンストラクタ
@@ -157,19 +176,23 @@ Game::~Game()
 // ゲームシーンの更新関数
 void Game::update()
 {
+	// フレームをカウント
 	CountControl(GameSceneFrameCount);
 
+	// ゲージレベルを管理
 	GageLevelControl();
 
+	// アニメーション時間の管理
 	AnimeTimeControl();
 
+	// BGMの再生
 	PlayGameBGM();
 
 	// ゲームがZキーで進行するとき
 	if (KeyZ.down() && AnimeControl == false)
 	{
 		GagePressCount++;
-		GameSceneFrameCount = 0;
+		GameSceneFrameCount = 1;
 		GameScore *= (GageLevel + 1);
 
 		AudioAsset(U"GameZPressed").setVolume(0.4);
@@ -190,13 +213,21 @@ void Game::update()
 // ゲームシーンの描画関数
 void Game::draw() const
 {
+	// 背景描画
 	DrawGameBack();
 
-	DrawGage();
-
+	// 炎を描画
 	DrawFire();
 
+	// ゲージ押下回数の描画
+	DrawGagePressCount();
+
+	// ゲージを描画
+	DrawGage();
+
+	// ハンバーグを描画
 	DrawHamburg();
 
+	// 腕とフライパンを描画
 	DrawArmAndPan();
 }
