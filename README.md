@@ -1,4 +1,4 @@
-# Hamburg_Battle
+# Hamburg Battle
 自作ゲーム"Hamburg Battle"のソースコードです．
 Siv3DというC++用フレームワークを用いて作成しました．
 
