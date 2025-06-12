@@ -1,0 +1,108 @@
+{
+	"PreLoad" : {
+
+		"Font" : ["null"],
+
+		"Sound" : [
+			"GameBGM.mp3",
+			"Oops.wav",
+			"AnyKeyPressed.mp3", 
+			"Select.wav" ,
+			"Cancel.mp3",
+			"Start.mp3",
+			"Decide.mp3"
+		],
+
+		"Picture" : [
+			"Hamburg.png"
+		]
+
+	},
+
+
+	"Title" : {
+
+		"Font" : [
+			"GridGazer.ttf"
+		],
+		"FontSize" : 40,
+
+		"Sound" : [
+			"Grilling.mp3"
+		],
+
+		"Picture" : [
+			"TitlePicture.png"
+		]
+
+	},
+
+
+	"Option" : {
+
+		"Font" : [
+			"GridGazer.ttf"
+		],
+		"FontSize" : 35,
+
+		"Sound" : ["null"],
+
+		"Picture" : ["null"]
+
+	},
+
+
+	"HowToPlay" : {
+
+		"Font" : ["null"],
+
+		"Sound" : ["null"],
+
+		"Picture" : [
+			"HowToPlay.png"
+		]
+		
+	},
+
+
+	"Game" : {
+
+		"Font" : ["null"],
+
+		"Sound" : [
+			"GameZPressed.mp3"
+		],
+
+		"Picture" : [
+			"GameBack.png",
+			"Cook.png",
+			"Fire1.png",
+			"Fire2.png",
+			"GageFront.png"
+		]
+	},
+
+
+	"Result" : {
+
+		"Font" : [
+			"GridGazer.ttf"
+		],
+		"FontSize" : 40,
+
+		"Sound" : [
+			"SatelliteBump.mp3",
+			"MoonBump.mp3",
+			"UFOBump.mp3",
+			"Bounce.mp3",
+			"Cheers.mp3"
+		],
+
+		"Picture" : [
+			"Universe.png",
+			"Satellite.png",
+			"Moon.png",
+			"UFO.png"
+		]
+	}
+}
